@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f4efe8">
+<title>Свадебное приглашение</title>
+<style>
+  :root{
+    --paper:#f4efe8; --ink:#24221f; --muted:#82796f;
+    --gold:#a88b5d; --line:rgba(70,59,47,.18); --white:#fffdf9;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif;font-weight:300}
+  button,input,textarea{font:inherit}
+  button{cursor:pointer}
+  .serif{font-family:"Bodoni  Moda","Didot","Times New Roman",serif;font-weight:400;letter-spacing:-.035em}
+  .eyebrow{text-transform:uppercase;letter-spacing:.24em;font-size:.65rem;color:var(--muted)}
+  .small-rule{width:42px;height:1px;background:var(--gold);margin:24px auto}
+  .cover{
+    min-height:100svh;display:grid;place-items:center;padding:28px 18px;position:relative;overflow:hidden;
+    background:radial-gradient(ellipse at 50% 38%,#fffdf9 0%,#f4efe8 58%,#e9dfd2 100%);
+  }
+  .cover:before,.cover:after{content:"";position:absolute;width:min(72vw,420px);height:min(72vw,420px);border:1px solid rgba(168,139,93,.18);border-radius:50%;pointer-events:none}
+  .cover:after{width:min(58vw,340px);height:min(58vw,340px)}
+  .cover-inner{z-index:1;text-align:center;width:min(100%,480px);display:flex;flex-direction:column;align-items:center}
+  .cover-note{margin-bottom:28px}
+  .envelope-wrap{width:min(82vw,360px);aspect-ratio:1.38;position:relative;perspective:1000px;filter:drop-shadow(0 22px 25px rgba(53,43,31,.13));margin:8px 0 28px}
+  .envelope{position:absolute;inset:0;background:#e9dfd2;overflow:hidden;border:1px solid rgba(120,94,62,.18)}
+  .envelope:before{content:"";position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.48),transparent 45%,rgba(157,127,87,.08))}
+  .envelope-flap{position:absolute;inset:0;background:#f0e7dc;clip-path:polygon(0 0,100% 0,50% 57%);transform-origin:top;transition:transform 1s cubic-bezier(.2,.7,.2,1);z-index:3}
+  .envelope-fold{position:absolute;inset:0;z-index:2;background:linear-gradient(32deg,transparent 49.5%,rgba(170,145,111,.2) 50%,transparent 50.5%),linear-gradient(-32deg,transparent 49.5%,rgba(170,145,111,.2) 50%,transparent 50.5%);pointer-events:none}
+  .seal{position:absolute;z-index:4;left:50%;top:49%;transform:translate(-50%,-50%);width:78px;height:78px;border-radius:50%;border:0;color:#f9eee0;background:radial-gradient(circle at 35% 28%,#b69b72,#806340 75%);box-shadow:inset 0 0 0 2px rgba(255,240,212,.28),0 4px 8px rgba(73,48,24,.2);font-family:"Times New Roman",serif;font-size:19px;letter-spacing:.06em;transition:transform .3s,opacity .5s;display:grid;place-items:center}
+  .seal:hover{transform:translate(-50%,-50%) scale(1.06)}
+  .seal:focus-visible,.music-toggle:focus-visible,.rsvp button:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+  .open .envelope-flap{transform:rotateX(180deg)}
+  .open .seal{opacity:0;pointer-events:none;transform:translate(-50%,-35%) scale(.7)}
+  .cover-title{font-size:clamp(2.3rem,9vw,4.2rem);line-height:.98;margin:0}
+  .cover-sub{margin:18px 0 0;line-height:1.8;color:var(--muted);font-size:.85rem}
+  .tap-hint{margin-top:20px;animation:softPulse 2s infinite;color:#786a59}
+  @keyframes softPulse{0%,100%{opacity:.55}50%{opacity:1}}
+  .invitation{display:none}
+  .invitation.visible{display:block;animation:reveal 1.2s both}
+  @keyframes reveal{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .hero{min-height:92svh;position:relative;display:flex;align-items:flex-end;justify-content:center;text-align:center;padding:80px 20px 70px;overflow:hidden;background:#c9bcae}
+  .hero-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 38%;filter:saturate(.72)}
+  .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(25,22,19,.65),rgba(25,22,19,.04) 68%,rgba(25,22,19,.12))}
+  .hero-copy{position:relative;z-index:1;color:#fffaf3;max-width:800px}
+  .hero .eyebrow{color:rgba(255,250,243,.78)}
+  .hero h1{font-size:clamp(3.5rem,13vw,8rem);line-height:.82;margin:24px 0}
+  .hero-date{letter-spacing:.25em;text-transform:uppercase;font-size:.75rem}
+  section.content{padding:90px 22px;text-align:center}
+  .content-inner{max-width:700px;margin:auto}
+  .section-title{font-size:clamp(2.5rem,8vw,4.7rem);line-height:1;margin:18px 0 22px}
+  .intro{font-family:"Times New Roman",serif;font-size:clamp(1.25rem,4vw,1.8rem);line-height:1.55;max-width:570px;margin:0 auto;color:#4d463e}
+  .date-block{background:#e9dfd2}
+  .date-big{font-size:clamp(4rem,17vw,8rem);line-height:.95;margin:22px 0;color:#6c5842}
+  .date-line{width:1px;height:50px;background:var(--gold);margin:25px auto}
+  .details{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px}
+  .detail{padding:24px 10px;border-top:1px solid var(--line)}
+  .detail strong{display:block;font-family:"Times New Roman",serif;font-size:1.35rem;font-weight:400;margin-bottom:10px}
+  .detail span{font-size:.8rem;color:var(--muted);line-height:1.7}
+  .photo-strip{display:grid;grid-template-columns:1fr 1fr;min-height:280px;gap:8px;padding:0 8px}
+  .photo-strip img{width:100%;height:100%;min-height:280px;object-fit:cover;filter:saturate(.7)}
+  .timeline{max-width:460px;margin:40px auto 0;text-align:left}
+  .event{display:grid;grid-template-columns:90px 1fr;gap:20px;padding:22px 0;border-bottom:1px solid var(--line)}
+  .event time{font-family:"Times New Roman",serif;font-size:1.35rem;color:var(--gold)}
+  .event h3{font-size:.9rem;font-weight:500;letter-spacing:.06em;margin:0 0 7px}
+  .event p{font-size:.83rem;line-height:1.6;color:var(--muted);margin:0}
+  .dress{background:#e9dfd2}
+  .swatches{display:flex;justify-content:center;gap:12px;margin:28px 0}
+  .swatch{width:37px;height:37px;border-radius:50%;border:1px solid rgba(0,0,0,.08)}
+  .rsvp form{max-width:440px;margin:34px auto 0;text-align:left}
+  .rsvp label{display:block;font-size:.8rem;margin:18px 0 8px;color:#665d53}
+  .rsvp input,.rsvp textarea,.rsvp select{width:100%;border:1px solid var(--line);background:rgba(255,253,249,.65);padding:14px;color:var(--ink);border-radius:0}
+  .rsvp button{margin-top:20px;width:100%;padding:15px;background:var(--ink);color:white;border:0;text-transform:uppercase;letter-spacing:.15em;font-size:.7rem}
+  .rsvp-note{font-size:.75rem;line-height:1.6;color:var(--muted);margin-top:14px}
+  footer{text-align:center;padding:55px 20px 70px;background:#24221f;color:#f4efe8}
+  footer .serif{font-size:2.6rem}
+  .music-toggle{position:fixed;right:16px;bottom:16px;z-index:10;border:1px solid rgba(168,139,93,.5);background:rgba(244,239,232,.92);color:#40372d;border-radius:50%;width:46px;height:46px;display:none;place-items:center;box-shadow:0 4px 15px #0001}
+  .music-toggle.show{display:grid}
+  .music-toggle span{font-size:17px}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s ease,transform .9s ease}
+  .reveal.in-view{opacity:1;transform:translateY(0)}
+
+  .couple-reveal{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:linear-gradient(145deg,#f4efe8,#e9dfd2);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .7s ease,visibility .7s}
+  .couple-reveal.play{opacity:1;visibility:visible}
+  .couple-card{width:min(84vw,440px);text-align:center}
+  .couple-visual{position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;background:#d8cbbd;box-shadow:0 24px 60px #4a39251c}
+  .couple-visual img{width:100%;height:100%;object-fit:cover;animation:coupleSpin 4.8s ease-in-out both;filter:saturate(.72)}
+  .couple-visual:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(25,22,19,.28),transparent 55%)}
+  .couple-caption{padding:22px 0 0}
+  .couple-caption .serif{font-size:clamp(2.2rem,8vw,3.5rem);line-height:1}
+  .couple-caption p{color:var(--muted);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;margin-top:14px}
+  @keyframes coupleSpin{0%{transform:scale(1.12) rotate(-2deg);filter:blur(5px) saturate(.6)}15%{filter:blur(0) saturate(.72)}35%{transform:scale(1.04) rotate(2deg)}60%{transform:scale(1.08) rotate(-1.5deg)}85%{transform:scale(1.02) rotate(1deg)}100%{transform:scale(1) rotate(0)}}
+
+  @media(max-width:560px){.details{grid-template-columns:1fr;gap:0}.detail{padding:20px 8px}.hero{min-height:85svh}.photo-strip img{min-height:210px}.event{grid-template-columns:72px 1fr}}
+  @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+  <main>
+    <section class="cover" id="cover" aria-label="Свадебный конверт">
+      <div class="cover-inner">
+        <div class="eyebrow cover-note">A special invitation</div>
+        <div class="envelope-wrap" id="envelopeWrap">
+          <div class="envelope">
+            <div class="envelope-fold"></div>
+            <div class="envelope-flap"></div>
+            <button class="seal" id="openSeal" aria-label="Открыть свадебное приглашение">Т & В</button>
+          </div>
+        </div>
+        <h1 class="cover-title serif">Приглашение</h1>
+        <p class="cover-sub">Есть моменты, которые хочется разделить<br>с самыми близкими людьми.</p>
+        <div class="eyebrow tap-hint">Нажмите на печать, чтобы открыть</div>
+      </div>
+    </section>
+
+    <section class="couple-reveal" id="coupleReveal" aria-label="Романтическое появление молодожёнов">
+      <div class="couple-card">
+        <div class="couple-visual">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=85" alt="Романтический момент молодожёнов">
+        </div>
+        <div class="couple-caption">
+          <div class="serif">Тумэн & Владислава</div>
+          <p>10 июля 2027 · Наша история начинается</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="invitation" id="invitation">
+      <section class="hero">
+        <!-- Замените этот видеоблок своим видео: парень кружит девушку на руках -->
+        <img class="hero-image" src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1800&q=85" alt="Романтичная свадебная сцена">
+        <div class="hero-copy">
+          <div class="eyebrow">We are getting married</div>
+          <h1 class="serif">Тумэн <span style="font-size:.55em">&</span> Владислава</h1>
+          <div class="hero-date">10 · ИЮЛЯ · 2027</div>
+        </div>
+      </section>
+
+      <section class="content">
+        <div class="content-inner reveal">
+          <div class="eyebrow">Дорогие родные и друзья</div>
+          <div class="small-rule"></div>
+          <h2 class="section-title serif">Мы женимся</h2>
+          <p class="intro">И будем счастливы, если вы станете частью этого особенного дня. Нам хочется разделить с вами радость, объятия, смех и воспоминания, которые останутся с нами навсегда.</p>
+        </div>
+      </section>
+
+      <section class="content date-block">
+        <div class="content-inner reveal">
+          <div class="eyebrow">Save the date</div>
+          <h2 class="section-title serif">Один день.<br>На всю жизнь.</h2>
+          <div class="date-big serif">10.07</div>
+          <div class="date-line"></div>
+          <div class="serif" style="font-size:2rem">2027</div>
+          <p style="margin:18px 0 0;color:var(--muted)">Место и время уточняются</p>
+          <div class="details">
+            <div class="detail"><strong>Место</strong><span>Уточняется<br>Сообщим дополнительно</span></div>
+            <div class="detail"><strong>Время</strong><span>Уточняется<br>Следите за обновлениями</span></div>
+            <div class="detail"><strong>Программа</strong><span>Скоро поделимся<br>всеми деталями</span></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="photo-strip reveal">
+        <img src="https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=900&q=85" alt="Молодожёны">
+        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=900&q=85" alt="Свадебный день">
+      </div>
+
+      <section class="content">
+        <div class="content-inner reveal">
+          <div class="eyebrow">The celebration</div>
+          <h2 class="section-title serif">План дня</h2>
+          <p style="color:var(--muted);font-size:.88rem;line-height:1.7">Никакой спешки — только любовь, близкие люди и счастливые моменты.</p>
+          <div class="timeline">
+            <div class="event"><time>15:30</time><div><h3>СБОР ГОСТЕЙ</h3><p>Объятия, приветственные напитки и первые фотографии.</p></div></div>
+            <div class="event"><time>16:00</time><div><h3>ЦЕРЕМОНИЯ</h3><p>Момент, когда начинается наша семейная история.</p></div></div>
+            <div class="event"><time>17:00</time><div><h3>УЖИН</h3><p>Вкусная еда, тёплые слова и много смеха.</p></div></div>
+            <div class="event"><time>20:00</time><div><h3>ТАНЦЫ И ПРАЗДНИК</h3><p>Пусть этот вечер запомнится нам всем.</p></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="content dress">
+        <div class="content-inner reveal">
+          <div class="eyebrow">Dress code</div>
+          <h2 class="section-title serif">Ваш стиль —<br>часть нашей истории</h2>
+          <p class="intro" style="font-size:1.15rem">Будем рады элегантным образам в спокойных, природных оттенках. Самое главное — чтобы вам было красиво и комфортно.</p>
+          <div class="swatches" aria-label="Цветовая палитра">
+            <span class="swatch" style="background:#e9dfd2"></span><span class="swatch" style="background:#c7b7a3"></span><span class="swatch" style="background:#a6a18e"></span><span class="swatch" style="background:#777c70"></span><span class="swatch" style="background:#393934"></span>
+          </div>
+          <div class="eyebrow">Ivory · Sand · Sage · Olive · Black</div>
+        </div>
+      </section>
+
+      <section class="content rsvp">
+        <div class="content-inner reveal">
+          <div class="eyebrow">Kindly reply</div>
+          <h2 class="section-title serif">Будете с нами?</h2>
+          <p style="color:var(--muted);font-size:.9rem;line-height:1.7">Подробности и подтверждение присутствия сообщим дополнительно.</p>
+          <form id="rsvpForm">
+            <label for="guestName">Ваше имя</label>
+            <input id="guestName" name="name" placeholder="Имя и фамилия" required>
+            <label for="attendance">Сможете прийти?</label>
+            <select id="attendance" name="attendance" required>
+              <option value="">Выберите ответ</option>
+              <option>С радостью буду!</option>
+              <option>К сожалению, не смогу</option>
+            </select>
+            <label for="guestMessage">Пожелание молодожёнам (необязательно)</label>
+            <textarea id="guestMessage" name="message" rows="3" placeholder="Несколько тёплых слов..."></textarea>
+            <button type="submit">Подтвердить присутствие</button>
+            <p class="rsvp-note">Демонстрационная форма: для получения ответов подключите её к почте, Google Forms, Telegram-боту или серверу. Сейчас она откроет подготовленное сообщение.</p>
+          </form>
+        </div>
+      </section>
+      <footer>
+        <div class="eyebrow" style="color:#c9b99f">With love</div>
+        <div class="serif" style="margin:14px 0">Тумэн & Владислава</div>
+        <div style="font-size:.7rem;letter-spacing:.2em">10 · 07 · 2027</div>
+      </footer>
+    </div>
+  </main>
+
+  <button class="music-toggle" id="musicToggle" aria-label="Включить музыку" title="Музыка"><span id="musicIcon">♫</span></button>
+  <!-- Положите свой легально используемый аудиофайл рядом с HTML и назовите music.mp3 -->
+  <audio id="weddingMusic" loop preload="none">
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+<script>
+  const seal = document.getElementById('openSeal');
+  const cover = document.getElementById('cover');
+  const envelope = document.getElementById('envelopeWrap');
+  const invitation = document.getElementById('invitation');
+  const music = document.getElementById('weddingMusic');
+  const musicToggle = document.getElementById('musicToggle');
+  const musicIcon = document.getElementById('musicIcon');
+
+  seal.addEventListener('click', async () => {
+    envelope.classList.add('open');
+    cover.classList.add('opened');
+    window.setTimeout(() => {
+      cover.style.display = 'none';
+      const coupleReveal = document.getElementById('coupleReveal');
+      coupleReveal.classList.add('play');
+      musicToggle.classList.add('show');
+      document.body.style.background = '#f4efe8';
+      window.setTimeout(() => {
+        coupleReveal.classList.remove('play');
+        invitation.classList.add('visible');
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        observeReveals();
+      }, 5000);
+    }, 950);
+    try {
+      await music.play();
+      musicIcon.textContent = '♫';
+      musicToggle.setAttribute('aria-label','Выключить музыку');
+    } catch (e) {
+      musicToggle.setAttribute('aria-label','Включить музыку');
+    }
+  });
+
+  musicToggle.addEventListener('click', async () => {
+    if (music.paused) {
+      try {
+        await music.play();
+        musicIcon.textContent = '♫';
+        musicToggle.setAttribute('aria-label','Выключить музыку');
+      } catch (e) {
+        alert('Добавьте файл music.mp3 рядом с HTML-файлом, чтобы включить музыку.');
+      }
+    } else {
+      music.pause();
+      musicIcon.textContent = '♪';
+      musicToggle.setAttribute('aria-label','Включить музыку');
+    }
+  });
+
+  let revealObserver;
+  function observeReveals() {
+    if (revealObserver) revealObserver.disconnect();
+    revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.12});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  }
+
+  document.getElementById('rsvpForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = document.getElementById('guestName').value.trim();
+    const attendance = document.getElementById('attendance').value;
+    const message = document.getElementById('guestMessage').value.trim();
+    const text = `Ответ на свадебное приглашение\nИмя: ${name}\nОтвет: ${attendance}\nПожелание: ${message || '—'}`;
+    const mail = 'mailto:replace-with-your-email@example.com?subject=' +
+      encodeURIComponent('Ответ на свадебное приглашение') + '&body=' + encodeURIComponent(text);
+    window.location.href = mail;
+  });
+</script>
+</body>
+</html>
